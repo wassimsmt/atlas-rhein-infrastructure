@@ -24,10 +24,6 @@
 
 
 
-\*(Passe die Daten an, falls sie nicht stimmen.)\*
-
-
-
 \### Virtuelle Switches
 
 
@@ -86,33 +82,11 @@ damit interne Clients auch externe Namen auflösen können.
 
 |---|---|---|
 
-| VM DC01 startete nicht | Nicht bootfähiges ISO (Languages and Optional Features) eingelegt | TODO |
+| VM DC01 startete nicht | Nicht bootfähiges ISO (Languages and Optional Features) eingelegt | Auf der Microsoft-Website nach dem richtigen Image gesucht, das Evaluation-ISO heruntergeladen und eingebunden |
 
-| OPNsense startete nicht mit Secure Boot | OPNsense basiert auf FreeBSD | TODO |
+| OPNsense startete nicht mit Secure Boot | OPNsense basiert auf FreeBSD; die Standard-Vorlage von Hyper-V akzeptiert den FreeBSD-Bootloader nicht | Secure Boot in den Firmware-Einstellungen der VM deaktiviert (Set-VMFirmware) |
 
-| Dienst ISC DHCPv4 nicht vorhanden | In OPNsense 26.1 entfernt (veraltet) | TODO |
-
-
-
-TODO – schreibe zu jedem Problem einen kurzen Satz:
-
-
-
-1\. "Die VM DC01 startete nicht, weil das falsche ISO eingelegt
-
-&#x20;  war. Ich habe ..."
-
-2\. "OPNsense basiert auf FreeBSD, deshalb musste ich ..."
-
-3\. "Der Dienst ISC DHCPv4 existiert in OPNsense 26.1 nicht mehr.
-
-&#x20;  Stattdessen habe ich ..."
-
-
-
-\*(Die kurzen Lösungen danach auch in die Tabelle eintragen und
-
-diese TODO-Zeilen löschen.)\*
+| Dienst ISC DHCPv4 nicht vorhanden | In OPNsense 26.1 entfernt (veraltet) | Den DHCP-Bereich für die Gäste-Zone stattdessen in Dnsmasq konfiguriert |
 
 
 
