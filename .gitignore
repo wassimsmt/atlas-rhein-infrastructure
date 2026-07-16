@@ -1,0 +1,7 @@
+﻿# draw.io Sicherungsdateien
+.$*.bkp
+*.bkp
+
+# Windows
+Thumbs.db
+desktop.ini
