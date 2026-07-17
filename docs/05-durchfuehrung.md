@@ -244,3 +244,163 @@ ausführe.
 
 | CL01 | CL01-domaenenbeitritt | direkt nach dem Domänenbeitritt |
 
+
+
+
+
+\## Woche 3 (Teil 2): Dateiserver, Berechtigungen und Gruppenrichtlinien
+
+
+
+\### Übersicht
+
+
+
+| Datum | Arbeitsschritt |
+
+|---|---|
+
+| 16.07.2026 | FS01 installiert und in die Domäne aufgenommen |
+
+| 16.07.2026 | Datenfestplatte, Freigabe und AGDLP-Berechtigungen |
+
+| 16.07.2026 | GPOs: Laufwerkszuordnung und Client-Sicherheit |
+
+| 16.07.2026 | Abnahmetest als Standardbenutzerin |
+
+
+
+\### FS01 (Dateiserver)
+
+
+
+Ich habe FS01 mit Windows Server 2025 installiert und in die
+
+Domäne aufgenommen. Für die Daten habe ich eine zweite virtuelle
+
+Festplatte angehängt und als Laufwerk D: (NTFS, Label "Daten")
+
+eingerichtet. System und Daten liegen damit getrennt, was
+
+Sicherung und Neuinstallation erleichtert.
+
+
+
+\### Freigabe und AGDLP-Berechtigungen
+
+
+
+Nach dem AGDLP-Prinzip erhalten Benutzer ihre Berechtigungen
+
+niemals direkt, sondern über eine Gruppenkette: Der Benutzer ist
+
+Mitglied einer globalen Abteilungsgruppe (z. B. G\_Vertrieb), diese
+
+ist in einer domänenlokalen Gruppe verschachtelt (z. B.
+
+DL\_Vertrieb\_RW), und nur die domänenlokale Gruppe bekommt
+
+NTFS-Berechtigungen auf dem Ordner. Ich habe die Freigabe
+
+Abteilungen$ auf D:\\Daten erstellt. Jede Abteilung hat einen
+
+eigenen Ordner, dazu gibt es den gemeinsamen Ordner Austausch.
+
+Die NTFS-Berechtigungen habe ich per PowerShell-Skript gesetzt.
+
+
+
+\### Gruppenrichtlinien
+
+
+
+Die erste GPO (GPO-Laufwerkszuordnung) verbindet für jede
+
+Abteilung automatisch das Laufwerk G: mit dem eigenen
+
+Abteilungsordner sowie für alle Benutzer das Laufwerk T: mit dem
+
+Ordner Austausch. Die zweite GPO (GPO-Client-Sicherheit) entzieht
+
+den Mitarbeitern die lokalen Administratorrechte: Über Restricted
+
+Groups sind auf allen Arbeitsplätzen nur noch die Domain Admins
+
+Mitglied der lokalen Administratorengruppe.
+
+
+
+\### Abnahmetest
+
+
+
+Zum Abschluss habe ich mich auf CL01 als sara.bennani angemeldet.
+
+Die Netzlaufwerke G: (Vertrieb) und T: (Austausch) wurden
+
+automatisch verbunden, und ich konnte auf beiden eine Testdatei
+
+erstellen. Der Zugriff auf den Ordner der Buchhaltung wurde
+
+verweigert. Der Versuch, ein Terminal als Administrator zu
+
+öffnen, scheiterte ebenfalls: Die Benutzerin hat durch die GPO
+
+keine lokalen Administratorrechte mehr.
+
+
+
+\### Probleme und Lösungen
+
+
+
+| Problem | Ursache | Lösung |
+
+|---|---|---|
+
+| FS01 startete nicht ("hash is not allowed") | Falsches ISO eingelegt (Ubuntu statt Windows Server); Secure Boot lehnte den Bootloader korrekt ab | Richtiges SERVER\_EVAL-Image eingelegt, Secure Boot wieder aktiviert |
+
+| Laufwerksbuchstabe D war belegt | Erst durch das Installations-ISO, dann durch das leere DVD-Laufwerk | ISO ausgeworfen, Buchstaben freigegeben, Datenpartition als D: erstellt |
+
+| Freigabe wurde nicht erstellt | Konto "Jeder" existiert nur auf deutschen Systemen; der Server läuft auf Englisch | Freigabe mit dem Konto "Everyone" erstellt; Fehlerunterdrückung aus dem Skript entfernt |
+
+| Anmeldung als Standardbenutzerin schlug fehl | Die Enhanced Session ist technisch eine RDP-Verbindung; Standardbenutzer haben kein RDP-Recht | In der Basiskonsole (Enhanced Session deaktiviert) angemeldet |
+
+| Laufwerk T: wurde nicht verbunden | Die Gruppe DL\_Austausch\_RW existierte nicht mehr im AD; ohne NTFS-Rechte schlug die Zuordnung stumm fehl | Gruppe neu erstellt, Mitglieder hinzugefügt, NTFS-Berechtigungen erneuert |
+
+
+
+Das T:-Problem habe ich schrittweise eingegrenzt: net use zeigte,
+
+dass die Zuordnung fehlte; gpresult bestätigte, dass die GPO
+
+angewendet wurde, aber die Gruppe DL\_Austausch\_RW nicht im Token
+
+der Benutzerin war; der GPO-Bericht zeigte einen korrekten
+
+Eintrag; Get-ADGroupMember ergab schließlich, dass die Gruppe im
+
+AD gar nicht existierte. Nach dem Neuerstellen musste ich auch die
+
+NTFS-Berechtigungen erneuern, denn eine neu erstellte Gruppe hat
+
+eine neue SID — die alte Berechtigung zeigte nur noch auf eine
+
+verwaiste SID.
+
+
+
+\### Prüfpunkte (Checkpoints)
+
+
+
+| VM | Name | Zeitpunkt |
+
+|---|---|---|
+
+| DC01 | DC01-woche3-abschluss | nach GPOs |
+
+| FS01 | FS01-woche3-abschluss | nach Freigaben und Reparatur |
+
+| CL01 | CL01-woche3-abschluss | nach bestandenem Abnahmetest |
+
