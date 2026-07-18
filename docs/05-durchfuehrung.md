@@ -404,3 +404,187 @@ verwaiste SID.
 
 | CL01 | CL01-woche3-abschluss | nach bestandenem Abnahmetest |
 
+
+
+
+
+\## Woche 4: Linux-Server mit Nextcloud und AD-Anmeldung
+
+
+
+\### Übersicht
+
+
+
+| Datum | Arbeitsschritt |
+
+|---|---|
+
+| 17.07.2026 | Ubuntu Server installiert, Netzwerk und DNS eingerichtet |
+
+| 17.07.2026 | LAMP-Stack und Nextcloud installiert |
+
+| 17.07.2026 | Zertifizierungsstelle installiert, LDAPS-Anbindung ans AD |
+
+| 18.07.2026 | HTTPS mit eigenem Zertifikat, Abnahmetest von CL01 |
+
+
+
+\### Ubuntu-Server (SRV-LX01)
+
+
+
+Ich habe SRV-LX01 mit Ubuntu Server 26.04 installiert und die
+
+statische IP-Adresse 10.10.10.20/24 konfiguriert (Gateway
+
+10.10.10.1, DNS 10.10.10.10, laut IP-Konzept). Außerdem habe ich
+
+den SSH-Server installiert. Die weitere Administration erfolgte
+
+per SSH von DC01 aus, weil dort Copy-and-paste zuverlässig
+
+funktioniert und das dem Arbeitsalltag entspricht.
+
+
+
+\### Nextcloud-Installation
+
+
+
+Für Nextcloud habe ich Apache (Webserver), MariaDB (Datenbank)
+
+und PHP mit den benötigten Modulen installiert. Ich habe
+
+Nextcloud bewusst manuell eingerichtet statt über das Snap-Paket,
+
+damit jede Komponente sichtbar und konfigurierbar bleibt.
+
+Nextcloud liegt unter /var/www/nextcloud und gehört dem
+
+Apache-Benutzer www-data.
+
+
+
+\### LDAPS-Anbindung an Active Directory
+
+
+
+Damit sich Mitarbeiter mit ihrem Domänenkonto anmelden können,
+
+habe ich Nextcloud an das Active Directory angebunden. Die
+
+Benutzer werden dabei nicht kopiert oder hochgeladen: Sie bleiben
+
+im AD, und Nextcloud fragt das Verzeichnis bei jeder Anmeldung
+
+live an. Dafür habe ich das Dienstkonto svc-nextcloud mit reinen
+
+Leserechten angelegt. Windows Server 2025 lehnt unverschlüsselte
+
+LDAP-Binds ab, deshalb habe ich eine Enterprise-Zertifizierungs-
+
+stelle (Atlas-Rhein-CA) installiert und die Anbindung auf LDAPS
+
+(Port 636) umgestellt. Als Anmeldename dient der sAMAccountName,
+
+sodass die Benutzer denselben Namen wie am Windows-PC verwenden.
+
+Das lokale Konto ncadmin bleibt als Notfall-Administrator
+
+unabhängig vom AD bestehen.
+
+
+
+\### HTTPS mit eigener Zertifizierungsstelle
+
+
+
+Für die Cloud habe ich ein Zertifikat erstellt, das von der
+
+eigenen Zertifizierungsstelle signiert wurde. Zusätzlich leitet
+
+eine Apache-Regel alle HTTP-Anfragen dauerhaft auf HTTPS um.
+
+DC01 und CL01 zeigen keine Zertifikatswarnung, weil
+
+Domänenmitglieder dem Zertifikat der Enterprise-CA automatisch
+
+über Gruppenrichtlinien vertrauen. Ubuntu habe ich das
+
+CA-Zertifikat manuell in den Trust-Store gelegt und danach die
+
+Zertifikatsprüfung der LDAP-Verbindung wieder aktiviert.
+
+
+
+\### Abnahmetest
+
+
+
+Zum Schluss habe ich mich von CL01 aus als sara.bennani
+
+angemeldet und bin auf https://cloud.ad.atlas-rhein.de gegangen.
+
+Der Browser zeigt das Schloss-Symbol ohne Warnung, und im Profil
+
+erscheint der Name sara.bennani. Damit funktionieren
+
+AD-Anmeldung, Verschlüsselung und Firewall-Weg aus der
+
+Mitarbeiter-Zone zusammen.
+
+
+
+\### Probleme und Lösungen
+
+
+
+| Problem | Ursache | Lösung |
+
+|---|---|---|
+
+| Entpacken von Nextcloud schlug fehl | bzip2 fehlt im minimalen Ubuntu-Server-Image | Paket bzip2 nachinstalliert |
+
+| LDAP-Bind: "Strong(er) authentication required" | Windows Server 2025 verlangt signierte bzw. verschlüsselte LDAP-Verbindungen | Enterprise-CA installiert, Anbindung auf LDAPS (636) umgestellt |
+
+| LDAP-Wizard überschrieb den Benutzerfilter | FilterMode 0: GUI regeneriert den Filter bei jedem Tab-Besuch | FilterMode 1 gesetzt, Filter per occ fixiert |
+
+| Benutzerzähler zeigte dauerhaft 0 | Fehler im Zähler-Widget der GUI | Funktion per occ ldap:search verifiziert (20 Konten), Widget als kosmetisch eingestuft |
+
+| Apache startete nicht | Zertifikatsdatei war leer (Paste in der Basiskonsole fehlgeschlagen) | Zertifikat per SSH erneut eingefügt, Prüfroutine etabliert |
+
+| Zertifikat unlesbar | Doppelte Base64-Kodierung (certutil -encode auf bereits PEM-formatierte certreq-Ausgabe) | Innere Schicht per base64 -d extrahiert |
+
+
+
+Bei der LDAP-Diagnose habe ich unterhalb von Nextcloud direkt mit
+
+ldapsearch getestet: Das AD lieferte alle 20 Konten, also lag der
+
+Fehler in Nextcloud selbst. Konfiguriert habe ich danach per
+
+occ-Kommandozeile statt über die GUI, weil der Wizard eigene
+
+Werte überschreibt. Der defekte Zähler war rein kosmetisch; die
+
+Funktion war nachweislich intakt.
+
+
+
+\### Prüfpunkte (Checkpoints)
+
+
+
+| VM | Name | Zeitpunkt |
+
+|---|---|---|
+
+| SRV-LX01 | SRVLX01-grundinstallation | nach Ubuntu-Setup |
+
+| SRV-LX01 | SRVLX01-nextcloud-basis | nach Nextcloud-Einrichtung |
+
+| SRV-LX01 | SRVLX01-ldap | nach LDAPS-Anbindung |
+
+| SRV-LX01 | SRVLX01-woche4-abschluss | nach HTTPS und Abnahmetest |
+
