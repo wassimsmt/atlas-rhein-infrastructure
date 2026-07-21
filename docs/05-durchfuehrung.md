@@ -588,3 +588,171 @@ Funktion war nachweislich intakt.
 
 | SRV-LX01 | SRVLX01-woche4-abschluss | nach HTTPS und Abnahmetest |
 
+
+
+
+
+\## Woche 5: Datensicherung und Monitoring
+
+
+
+\### Übersicht
+
+
+
+| Datum | Arbeitsschritt |
+
+|---|---|
+
+| 19.07.2026 | Veeam installiert, Agent-basierte Sicherung eingerichtet |
+
+| 20.07.2026 | Backup-Job und Wiederherstellungstest durchgeführt |
+
+| 21.07.2026 | MON01 erstellt, CheckMK-Monitoring eingerichtet |
+
+| 21.07.2026 | Alarmtest durchgeführt |
+
+
+
+\### Datensicherung nach dem 3-2-1-Prinzip
+
+
+
+Für die Datensicherung habe ich Veeam Backup \& Replication
+
+installiert. Eine hostbasierte Sicherung der virtuellen Maschinen
+
+war nicht möglich, da der Hyper-V-Host unter Windows 11 (Client)
+
+läuft und Veeam dies nur auf Windows Server unterstützt. Deshalb
+
+habe ich stattdessen die Agent-basierte Sicherung gewählt: Auf
+
+jedem Server läuft ein Veeam-Agent, der über den zentralen
+
+Veeam-Server verwaltet wird. Gesichert werden die drei Server
+
+DC01, FS01 und SRV-LX01; CL01 wird nicht gesichert, da ein Client
+
+im Fehlerfall einfach neu installiert und der Domäne wieder
+
+hinzugefügt werden kann. Nach dem 3-2-1-Prinzip gibt es drei
+
+Kopien der Daten auf zwei Medientypen, davon eine Kopie an einem
+
+externen Ort: das Original auf den produktiven Festplatten, die
+
+Sicherung im Veeam-Repository und eine Offsite-Kopie, die im Labor
+
+durch einen zweiten Ordner (stellvertretend für eine externe
+
+Festplatte) simuliert wird. Die Firewall FW01 wird zusätzlich als
+
+Konfigurationsdatei gesichert, da eine Firewall nicht als Abbild,
+
+sondern über ihre Konfiguration gesichert wird.
+
+
+
+\### Wiederherstellungstest
+
+
+
+Ein Backup ohne Test ist wertlos, deshalb habe ich die
+
+Wiederherstellung geprüft. Ich habe eine Testdatei auf dem
+
+Laufwerk G: gelöscht und sie anschließend über Veeam aus dem
+
+Backup von FS01 wiederhergestellt. Danach war die Datei wieder
+
+vorhanden – die Sicherung ist damit nachweislich funktionsfähig.
+
+
+
+\### Monitoring mit CheckMK
+
+
+
+Für das Monitoring habe ich die neue VM MON01 (Ubuntu Server)
+
+erstellt und CheckMK installiert. Ich habe drei Hosts eingebunden:
+
+DC01, FS01 und SRV-LX01. Auf jedem Host läuft ein Agent, der die
+
+Daten über den Port 6556 an den Monitoring-Server sendet. Die
+
+Windows-Agenten mussten sich zusätzlich per TLS beim Server
+
+registrieren, bevor sie ihre Dienstdaten übermittelten.
+
+
+
+\### Alarmtest
+
+
+
+Monitoring beweist man nicht durch grüne Anzeigen, sondern durch
+
+einen erkannten Fehler. Ich habe auf SRV-LX01 einen überwachten
+
+Dienst gestoppt, und CheckMK hat den Ausfall innerhalb von
+
+Sekunden als CRIT (kritisch) angezeigt. Nachdem ich den Dienst
+
+wieder gestartet hatte, wechselte der Status automatisch zurück
+
+auf OK – der vollständige Zyklus aus Ausfall, Erkennung und
+
+Behebung war damit nachgewiesen.
+
+
+
+\### Probleme und Lösungen
+
+
+
+| Problem | Ursache | Lösung |
+
+|---|---|---|
+
+| Dienst VeeamNFSSvc startete bei der Installation nicht | Ein Drittanbieter-Virenscanner blockierte den Dienststart | Smart App Control deaktiviert, Veeam-Ordner in die Ausnahmeliste aufgenommen, Neustart |
+
+| Hostbasierte Sicherung nicht möglich | Der Hyper-V-Host läuft unter Windows 11 (Client), nicht Windows Server | Umstellung auf Agent-basierte Sicherung |
+
+| SSH-Anmeldung von SRV-LX01 in Veeam schlug fehl | SSH-Dienst- und Firewall-Zustand auf dem Ubuntu-Server | SSH-Dienst und Firewall korrigiert, danach wurde die Verbindung erfolgreich hergestellt |
+
+| SRV-LX01 ließ sich nicht als Agent sichern | Konflikt zwischen der Snapshot-Methode und Secure Boot | Secure Boot für diese VM deaktiviert, Agent-Sicherung getrennt eingerichtet |
+
+| CheckMK-Paket ließ sich nicht installieren | Falsche Ubuntu-Version des Pakets (noble/24.04 statt resolute/26.04); zudem lieferte der Download nur eine HTML-Seite statt der .deb-Datei | Passendes Paket über DC01 heruntergeladen und per PowerShell/SCP auf SRV-LX01 übertragen |
+
+| Windows-Agenten sendeten keine Dienstdaten | Die Agenten waren erreichbar, aber nicht per TLS am Server registriert | Agenten mit cmk-agent-ctl registriert und Port 6556 in der Firewall freigegeben |
+
+
+
+Bei den Windows-Agenten habe ich die Ursache schrittweise
+
+eingegrenzt: Der Agent war per telnet auf Port 6556 erreichbar,
+
+sendete aber nur wenige Bytes statt der erwarteten Dienstdaten.
+
+Das zeigte, dass nicht die Verbindung, sondern die fehlende
+
+TLS-Registrierung das Problem war. Nach der Registrierung
+
+lieferten beide Windows-Hosts ihre Dienste vollständig.
+
+
+
+\### Prüfpunkte (Checkpoints)
+
+
+
+| VM | Name | Zeitpunkt |
+
+|---|---|---|
+
+| MON01 | MON01-grundinstallation | nach Ubuntu-Setup |
+
+| MON01 | MON01-woche5-abschluss | nach CheckMK und Alarmtest |
+
