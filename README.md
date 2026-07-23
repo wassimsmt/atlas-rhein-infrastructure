@@ -1,5 +1,18 @@
 # Atlas-Rhein Handel GmbH — IT-Infrastruktur
 
+📄 **[Projektdokumentation (PDF, 59 Seiten)](Projektdokumentation-Atlas-Rhein.pdf)**
+
+## Umfang
+
+| | |
+|---|---|
+| Virtuelle Maschinen | 6 (Firewall, Domänencontroller, Dateiserver, Linux-Server, Monitoring, Client) |
+| Netzwerkzonen | 3 (Server, Mitarbeiter, Gäste) |
+| Benutzerkonten | 20, per PowerShell aus CSV angelegt |
+| Skripte | 15 (PowerShell und Bash) |
+| Dokumentation | 59 Seiten (deutsch), inkl. Testprotokoll und Betriebshandbuch |
+| Projektdauer | 6 Wochen |
+
 ## Abstract
 
 This repository documents the design and implementation of a central
