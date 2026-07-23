@@ -1,30 +1,25 @@
-\# Durchführung
+# Durchführung
 
 
 
-\## Woche 2: Firewall und Domänencontroller
+## Woche 2: Firewall und Domänencontroller
 
 
 
-\### Übersicht
+### Übersicht
 
 
 
 | Datum | Arbeitsschritt |
-
 |---|---|
-
 | 14.07.2026 | Virtuelle Switches erstellt |
-
 | 14.07.2026 | FW01 installiert und konfiguriert |
-
 | 14.07.2026 | DC01 installiert, Domäne erstellt |
-
 | 15.07.2026 | OPT-Schnittstellen und Gäste-DHCP eingerichtet |
 
 
 
-\### Virtuelle Switches
+### Virtuelle Switches
 
 
 
@@ -38,7 +33,7 @@ diese Netzwerke zugreifen können.
 
 
 
-\### FW01 (OPNsense-Firewall)
+### FW01 (OPNsense-Firewall)
 
 
 
@@ -56,7 +51,7 @@ habe ich später die Zonen MITARBEITER (10.10.20.1) und GAESTE
 
 
 
-\### DC01 (Domänencontroller)
+### DC01 (Domänencontroller)
 
 
 
@@ -74,63 +69,49 @@ damit interne Clients auch externe Namen auflösen können.
 
 
 
-\### Probleme und Lösungen
+### Probleme und Lösungen
 
 
 
 | Problem | Ursache | Lösung |
-
 |---|---|---|
-
 | VM DC01 startete nicht | Nicht bootfähiges ISO (Languages and Optional Features) eingelegt | Auf der Microsoft-Website nach dem richtigen Image gesucht, das Evaluation-ISO heruntergeladen und eingebunden |
-
 | OPNsense startete nicht mit Secure Boot | OPNsense basiert auf FreeBSD; die Standard-Vorlage von Hyper-V akzeptiert den FreeBSD-Bootloader nicht | Secure Boot in den Firmware-Einstellungen der VM deaktiviert (Set-VMFirmware) |
-
 | Dienst ISC DHCPv4 nicht vorhanden | In OPNsense 26.1 entfernt (veraltet) | Den DHCP-Bereich für die Gäste-Zone stattdessen in Dnsmasq konfiguriert |
 
 
 
-\### Prüfpunkte (Checkpoints)
+### Prüfpunkte (Checkpoints)
 
 
 
 | VM | Name | Zeitpunkt |
-
 |---|---|---|
-
 | FW01 | FW01-basiskonfiguration | nach der Konsolen-Grundkonfiguration |
-
 | FW01 | FW01-woche2-abschluss | nach Zonen- und DHCP-Konfiguration |
-
 | DC01 | DC01-vor-AD-promotion | vor der AD-Installation |
-
 | DC01 | DC01-woche2-abschluss | nach Promotion und DNS-Konfiguration |
 
 
 
-\## Woche 3 (Teil 1): Benutzer, DHCP und Client
+## Woche 3 (Teil 1): Benutzer, DHCP und Client
 
 
 
-\### Übersicht
+### Übersicht
 
 
 
 | Datum | Arbeitsschritt |
-
 |---|---|
-
 | 15.07.2026 | OU-Struktur und 20 Benutzer per Skript angelegt |
-
 | 15.07.2026 | DHCP-Rolle auf DC01, Bereich Mitarbeiter, DHCP-Relay auf FW01 |
-
 | 15.07.2026 | Firewall-Regeln für die Mitarbeiter-Zone |
-
 | 15.07.2026 | CL01 installiert und in die Domäne aufgenommen |
 
 
 
-\### OU-Struktur und Benutzer
+### OU-Struktur und Benutzer
 
 
 
@@ -148,7 +129,7 @@ ersten Login ändern.
 
 
 
-\### DHCP für die Mitarbeiter-Zone
+### DHCP für die Mitarbeiter-Zone
 
 
 
@@ -170,7 +151,7 @@ von Dnsmasq auf der Firewall.
 
 
 
-\### Firewall-Regeln
+### Firewall-Regeln
 
 
 
@@ -190,7 +171,7 @@ den internen Netzen isoliert.
 
 
 
-\### CL01 (Windows-11-Client)
+### CL01 (Windows-11-Client)
 
 
 
@@ -206,16 +187,13 @@ sofort das Passwort ändern.
 
 
 
-\### Probleme und Lösungen
+### Probleme und Lösungen
 
 
 
 | Problem | Ursache | Lösung |
-
 |---|---|---|
-
 | CL01 startete nicht (Fehler 0xC000A002), fünf DVD-Laufwerke vorhanden | Das Erstellungsskript wurde mehrfach ausgeführt; dadurch entstanden doppelte DVD-Laufwerke und der vTPM-Zustand wurde beschädigt | VM vollständig entfernt und einmalig neu erstellt |
-
 | CL01: "The boot loader failed" beim ersten Start | Die Aufforderung "Press any key to boot from CD or DVD" wurde verpasst | VM neu gestartet, Fenster fokussiert und die Taste rechtzeitig gedrückt |
 
 
@@ -230,47 +208,38 @@ ausführe.
 
 
 
-\### Prüfpunkte (Checkpoints)
+### Prüfpunkte (Checkpoints)
 
 
 
 | VM | Name | Zeitpunkt |
-
 |---|---|---|
-
 | DC01 | DC01-woche3-teil1 | nach DHCP, OUs und Benutzern |
-
 | FW01 | FW01-woche3-teil1 | nach Regeln und Relay |
-
 | CL01 | CL01-domaenenbeitritt | direkt nach dem Domänenbeitritt |
 
 
 
 
 
-\## Woche 3 (Teil 2): Dateiserver, Berechtigungen und Gruppenrichtlinien
+## Woche 3 (Teil 2): Dateiserver, Berechtigungen und Gruppenrichtlinien
 
 
 
-\### Übersicht
+### Übersicht
 
 
 
 | Datum | Arbeitsschritt |
-
 |---|---|
-
 | 16.07.2026 | FS01 installiert und in die Domäne aufgenommen |
-
 | 16.07.2026 | Datenfestplatte, Freigabe und AGDLP-Berechtigungen |
-
 | 16.07.2026 | GPOs: Laufwerkszuordnung und Client-Sicherheit |
-
 | 16.07.2026 | Abnahmetest als Standardbenutzerin |
 
 
 
-\### FS01 (Dateiserver)
+### FS01 (Dateiserver)
 
 
 
@@ -286,7 +255,7 @@ Sicherung und Neuinstallation erleichtert.
 
 
 
-\### Freigabe und AGDLP-Berechtigungen
+### Freigabe und AGDLP-Berechtigungen
 
 
 
@@ -310,7 +279,7 @@ Die NTFS-Berechtigungen habe ich per PowerShell-Skript gesetzt.
 
 
 
-\### Gruppenrichtlinien
+### Gruppenrichtlinien
 
 
 
@@ -330,7 +299,7 @@ Mitglied der lokalen Administratorengruppe.
 
 
 
-\### Abnahmetest
+### Abnahmetest
 
 
 
@@ -350,22 +319,16 @@ keine lokalen Administratorrechte mehr.
 
 
 
-\### Probleme und Lösungen
+### Probleme und Lösungen
 
 
 
 | Problem | Ursache | Lösung |
-
 |---|---|---|
-
 | FS01 startete nicht ("hash is not allowed") | Falsches ISO eingelegt (Ubuntu statt Windows Server); Secure Boot lehnte den Bootloader korrekt ab | Richtiges SERVER\_EVAL-Image eingelegt, Secure Boot wieder aktiviert |
-
 | Laufwerksbuchstabe D war belegt | Erst durch das Installations-ISO, dann durch das leere DVD-Laufwerk | ISO ausgeworfen, Buchstaben freigegeben, Datenpartition als D: erstellt |
-
 | Freigabe wurde nicht erstellt | Konto "Jeder" existiert nur auf deutschen Systemen; der Server läuft auf Englisch | Freigabe mit dem Konto "Everyone" erstellt; Fehlerunterdrückung aus dem Skript entfernt |
-
 | Anmeldung als Standardbenutzerin schlug fehl | Die Enhanced Session ist technisch eine RDP-Verbindung; Standardbenutzer haben kein RDP-Recht | In der Basiskonsole (Enhanced Session deaktiviert) angemeldet |
-
 | Laufwerk T: wurde nicht verbunden | Die Gruppe DL\_Austausch\_RW existierte nicht mehr im AD; ohne NTFS-Rechte schlug die Zuordnung stumm fehl | Gruppe neu erstellt, Mitglieder hinzugefügt, NTFS-Berechtigungen erneuert |
 
 
@@ -390,47 +353,38 @@ verwaiste SID.
 
 
 
-\### Prüfpunkte (Checkpoints)
+### Prüfpunkte (Checkpoints)
 
 
 
 | VM | Name | Zeitpunkt |
-
 |---|---|---|
-
 | DC01 | DC01-woche3-abschluss | nach GPOs |
-
 | FS01 | FS01-woche3-abschluss | nach Freigaben und Reparatur |
-
 | CL01 | CL01-woche3-abschluss | nach bestandenem Abnahmetest |
 
 
 
 
 
-\## Woche 4: Linux-Server mit Nextcloud und AD-Anmeldung
+## Woche 4: Linux-Server mit Nextcloud und AD-Anmeldung
 
 
 
-\### Übersicht
+### Übersicht
 
 
 
 | Datum | Arbeitsschritt |
-
 |---|---|
-
 | 17.07.2026 | Ubuntu Server installiert, Netzwerk und DNS eingerichtet |
-
 | 17.07.2026 | LAMP-Stack und Nextcloud installiert |
-
 | 17.07.2026 | Zertifizierungsstelle installiert, LDAPS-Anbindung ans AD |
-
 | 18.07.2026 | HTTPS mit eigenem Zertifikat, Abnahmetest von CL01 |
 
 
 
-\### Ubuntu-Server (SRV-LX01)
+### Ubuntu-Server (SRV-LX01)
 
 
 
@@ -448,7 +402,7 @@ funktioniert und das dem Arbeitsalltag entspricht.
 
 
 
-\### Nextcloud-Installation
+### Nextcloud-Installation
 
 
 
@@ -466,7 +420,7 @@ Apache-Benutzer www-data.
 
 
 
-\### LDAPS-Anbindung an Active Directory
+### LDAPS-Anbindung an Active Directory
 
 
 
@@ -496,7 +450,7 @@ unabhängig vom AD bestehen.
 
 
 
-\### HTTPS mit eigener Zertifizierungsstelle
+### HTTPS mit eigener Zertifizierungsstelle
 
 
 
@@ -518,7 +472,7 @@ Zertifikatsprüfung der LDAP-Verbindung wieder aktiviert.
 
 
 
-\### Abnahmetest
+### Abnahmetest
 
 
 
@@ -536,24 +490,17 @@ Mitarbeiter-Zone zusammen.
 
 
 
-\### Probleme und Lösungen
+### Probleme und Lösungen
 
 
 
 | Problem | Ursache | Lösung |
-
 |---|---|---|
-
 | Entpacken von Nextcloud schlug fehl | bzip2 fehlt im minimalen Ubuntu-Server-Image | Paket bzip2 nachinstalliert |
-
 | LDAP-Bind: "Strong(er) authentication required" | Windows Server 2025 verlangt signierte bzw. verschlüsselte LDAP-Verbindungen | Enterprise-CA installiert, Anbindung auf LDAPS (636) umgestellt |
-
 | LDAP-Wizard überschrieb den Benutzerfilter | FilterMode 0: GUI regeneriert den Filter bei jedem Tab-Besuch | FilterMode 1 gesetzt, Filter per occ fixiert |
-
 | Benutzerzähler zeigte dauerhaft 0 | Fehler im Zähler-Widget der GUI | Funktion per occ ldap:search verifiziert (20 Konten), Widget als kosmetisch eingestuft |
-
 | Apache startete nicht | Zertifikatsdatei war leer (Paste in der Basiskonsole fehlgeschlagen) | Zertifikat per SSH erneut eingefügt, Prüfroutine etabliert |
-
 | Zertifikat unlesbar | Doppelte Base64-Kodierung (certutil -encode auf bereits PEM-formatierte certreq-Ausgabe) | Innere Schicht per base64 -d extrahiert |
 
 
@@ -572,49 +519,39 @@ Funktion war nachweislich intakt.
 
 
 
-\### Prüfpunkte (Checkpoints)
+### Prüfpunkte (Checkpoints)
 
 
 
 | VM | Name | Zeitpunkt |
-
 |---|---|---|
-
 | SRV-LX01 | SRVLX01-grundinstallation | nach Ubuntu-Setup |
-
 | SRV-LX01 | SRVLX01-nextcloud-basis | nach Nextcloud-Einrichtung |
-
 | SRV-LX01 | SRVLX01-ldap | nach LDAPS-Anbindung |
-
 | SRV-LX01 | SRVLX01-woche4-abschluss | nach HTTPS und Abnahmetest |
 
 
 
 
 
-\## Woche 5: Datensicherung und Monitoring
+## Woche 5: Datensicherung und Monitoring
 
 
 
-\### Übersicht
+### Übersicht
 
 
 
 | Datum | Arbeitsschritt |
-
 |---|---|
-
 | 19.07.2026 | Veeam installiert, Agent-basierte Sicherung eingerichtet |
-
 | 20.07.2026 | Backup-Job und Wiederherstellungstest durchgeführt |
-
 | 21.07.2026 | MON01 erstellt, CheckMK-Monitoring eingerichtet |
-
 | 21.07.2026 | Alarmtest durchgeführt |
 
 
 
-\### Datensicherung nach dem 3-2-1-Prinzip
+### Datensicherung nach dem 3-2-1-Prinzip
 
 
 
@@ -654,7 +591,7 @@ sondern über ihre Konfiguration gesichert wird.
 
 
 
-\### Wiederherstellungstest
+### Wiederherstellungstest
 
 
 
@@ -670,7 +607,7 @@ vorhanden – die Sicherung ist damit nachweislich funktionsfähig.
 
 
 
-\### Monitoring mit CheckMK
+### Monitoring mit CheckMK
 
 
 
@@ -688,7 +625,7 @@ registrieren, bevor sie ihre Dienstdaten übermittelten.
 
 
 
-\### Alarmtest
+### Alarmtest
 
 
 
@@ -708,24 +645,17 @@ Behebung war damit nachgewiesen.
 
 
 
-\### Probleme und Lösungen
+### Probleme und Lösungen
 
 
 
 | Problem | Ursache | Lösung |
-
 |---|---|---|
-
 | Dienst VeeamNFSSvc startete bei der Installation nicht | Ein Drittanbieter-Virenscanner blockierte den Dienststart | Smart App Control deaktiviert, Veeam-Ordner in die Ausnahmeliste aufgenommen, Neustart |
-
 | Hostbasierte Sicherung nicht möglich | Der Hyper-V-Host läuft unter Windows 11 (Client), nicht Windows Server | Umstellung auf Agent-basierte Sicherung |
-
 | SSH-Anmeldung von SRV-LX01 in Veeam schlug fehl | SSH-Dienst- und Firewall-Zustand auf dem Ubuntu-Server | SSH-Dienst und Firewall korrigiert, danach wurde die Verbindung erfolgreich hergestellt |
-
 | SRV-LX01 ließ sich nicht als Agent sichern | Konflikt zwischen der Snapshot-Methode und Secure Boot | Secure Boot für diese VM deaktiviert, Agent-Sicherung getrennt eingerichtet |
-
 | CheckMK-Paket ließ sich nicht installieren | Falsche Ubuntu-Version des Pakets (noble/24.04 statt resolute/26.04); zudem lieferte der Download nur eine HTML-Seite statt der .deb-Datei | Passendes Paket über DC01 heruntergeladen und per PowerShell/SCP auf SRV-LX01 übertragen |
-
 | Windows-Agenten sendeten keine Dienstdaten | Die Agenten waren erreichbar, aber nicht per TLS am Server registriert | Agenten mit cmk-agent-ctl registriert und Port 6556 in der Firewall freigegeben |
 
 
@@ -744,15 +674,40 @@ lieferten beide Windows-Hosts ihre Dienste vollständig.
 
 
 
-\### Prüfpunkte (Checkpoints)
+### Prüfpunkte (Checkpoints)
 
 
 
 | VM | Name | Zeitpunkt |
-
 |---|---|---|
-
 | MON01 | MON01-grundinstallation | nach Ubuntu-Setup |
-
 | MON01 | MON01-woche5-abschluss | nach CheckMK und Alarmtest |
+
+
+
+## Woche 6: Abnahmetests und Abschluss
+
+
+
+Im Rahmen der Abnahmetests wurde die Gäste-Zone mit einem
+
+Testgerät geprüft. Dabei zeigte sich, dass die Zone zwar
+
+vollständig isoliert war, aber auch keinen Internetzugang hatte,
+
+da für die Schnittstelle GAESTE noch keine Firewall-Regeln
+
+existierten. Deshalb habe ich das Regelwerk vervollständigt: zwei
+
+Block-Regeln verhindern den Zugriff auf die Server- und die
+
+Mitarbeiter-Zone, eine nachgelagerte Pass-Regel erlaubt den
+
+Internetzugang. Die Reihenfolge ist entscheidend, da OPNsense die
+
+Regeln von oben nach unten nach dem ersten Treffer auswertet. Der
+
+anschließende Test bestätigte das gewünschte Verhalten: interne
+
+Systeme waren nicht erreichbar, der Internetzugang funktionierte.
 

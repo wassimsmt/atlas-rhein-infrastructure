@@ -1,8 +1,8 @@
-\# Projektantrag: IT-Infrastruktur Atlas-Rhein Handel GmbH
+# Projektantrag: IT-Infrastruktur Atlas-Rhein Handel GmbH
 
 
 
-\## 1. Projektbezeichnung
+## 1. Projektbezeichnung
 
 
 
@@ -12,7 +12,7 @@ für ein kleines Handelsunternehmen mit 20 Mitarbeitern.
 
 
 
-\## 2. Kurzbeschreibung der Aufgabe
+## 2. Kurzbeschreibung der Aufgabe
 
 
 
@@ -30,7 +30,7 @@ Datensicherungsstrategie nach dem 3-2-1-Prinzip.
 
 
 
-\## 3. Ist-Analyse
+## 3. Ist-Analyse
 
 
 
@@ -50,7 +50,7 @@ Er hat eine wichtige Datei gelöscht, und es gab kein Backup.
 
 
 
-\## 4. Soll-Konzept und Projektziele
+## 4. Soll-Konzept und Projektziele
 
 
 
@@ -60,25 +60,25 @@ nutzbar sein:
 
 
 
-\- Zentrale Benutzerverwaltung mit Active Directory (Windows Server 2025)
+- Zentrale Benutzerverwaltung mit Active Directory (Windows Server 2025)
 
-\- Netzwerksegmentierung in drei Zonen: Server, Mitarbeiter und Gäste
+- Netzwerksegmentierung in drei Zonen: Server, Mitarbeiter und Gäste
 
-\- Firewall (OPNsense) mit einem dokumentierten Regelwerk zwischen den Zonen
+- Firewall (OPNsense) mit einem dokumentierten Regelwerk zwischen den Zonen
 
-\- Zentraler Dateiserver mit Berechtigungskonzept nach dem AGDLP-Prinzip
+- Zentraler Dateiserver mit Berechtigungskonzept nach dem AGDLP-Prinzip
 
-\- Cloud-Speicher (Nextcloud) mit Anmeldung über Active Directory
+- Cloud-Speicher (Nextcloud) mit Anmeldung über Active Directory
 
-\- Monitoring aller Server und Dienste mit CheckMK, inklusive Alarmierung
+- Monitoring aller Server und Dienste mit CheckMK, inklusive Alarmierung
 
-\- Datensicherung nach dem 3-2-1-Prinzip mit dokumentiertem Wiederherstellungstest
+- Datensicherung nach dem 3-2-1-Prinzip mit dokumentiertem Wiederherstellungstest
 
-\- Entzug der lokalen Administratorrechte für alle Mitarbeiter
+- Entzug der lokalen Administratorrechte für alle Mitarbeiter
 
 
 
-\## 5. Projektumfeld
+## 5. Projektumfeld
 
 
 
@@ -88,29 +88,29 @@ Das Projekt wird in einer virtuellen Testumgebung umgesetzt
 
 
 
-\## 6. Projektphasen und Zeitplanung
+## 6. Projektphasen und Zeitplanung
 
 
 
-| Phase | Inhalt | Dauer |
+| Phase |                    Inhalt                  |  Dauer  |
 
-|---|---|---|
+|-------|--------------------------------------------|---------|
 
-| 1 | Planung (Netzplan, IP-Konzept, AD-Design) | 1 Woche |
+|   1   | Planung (Netzplan, IP-Konzept, AD-Design)  | 1 Woche |
 
-| 2 | Firewall und Domänencontroller | 1 Woche |
+|   2   | Firewall und Domänencontroller             | 1 Woche |
 
-| 3 | Dateiserver und Client | 1 Woche |
+|   3   | Dateiserver und Client                     | 1 Woche |
 
-| 4 | Linux-Server mit Nextcloud | 1 Woche |
+|   4   | Linux-Server mit Nextcloud                 | 1 Woche |
 
-| 5 | Datensicherung und Monitoring | 1 Woche |
+|   5   | Datensicherung und Monitoring              | 1 Woche |
 
-| 6 | Tests und Abschlussdokumentation | 1 Woche |
+|   6   | Tests und Abschlussdokumentation           | 1 Woche |
 
 
 
-\## 7. Geplante Dokumentation
+## 7. Geplante Dokumentation
 
 
 

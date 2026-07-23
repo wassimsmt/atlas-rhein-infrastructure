@@ -1,8 +1,8 @@
-\# Active-Directory-Design: Atlas-Rhein Handel GmbH
+# Active-Directory-Design: Atlas-Rhein Handel GmbH
 
 
 
-\## Domänenname
+## Domänenname
 
 
 
@@ -18,7 +18,7 @@ und die Subdomäne vermeidet Konflikte mit der öffentlichen Website.
 
 
 
-\## OU-Struktur
+## OU-Struktur
 
 
 
@@ -44,19 +44,19 @@ Atlas-Rhein
 
 
 
-\## Grundsätze
+## Grundsätze
 
 
 
-\- Jeder Mitarbeiter erhält ein persönliches Benutzerkonto ohne
+- Jeder Mitarbeiter erhält ein persönliches Benutzerkonto ohne
 
 &#x20; Administratorrechte.
 
-\- Berechtigungen werden nur über Gruppen vergeben (AGDLP-Prinzip),
+- Berechtigungen werden nur über Gruppen vergeben (AGDLP-Prinzip),
 
 &#x20; nie direkt an Benutzer.
 
-\- Die Benutzerkonten werden per PowerShell-Skript aus einer
+- Die Benutzerkonten werden per PowerShell-Skript aus einer
 
 &#x20; CSV-Liste angelegt.
 
