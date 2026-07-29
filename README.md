@@ -65,3 +65,8 @@ Der Ordner [scripts/](scripts/) enthält die nummerierten PowerShell-
 und Bash-Skripte, mit denen die Infrastruktur aufgebaut wurde (u. a.
 virtuelle Switches, VM-Erstellung, AD-Promotion, OU- und
 Benutzeranlage, DHCP, Dateifreigaben und Nextcloud-Installation).
+
+## Aufbauendes Projekt
+
+Auf dieser Infrastruktur aufbauend wurde die Benutzeranlage automatisiert:
+[AD-Onboarding-Automatisierung mit n8n](https://github.com/wassimsmt/ad-onboarding-automation) — ein Formular löst über einen n8n-Workflow die Anlage eines neuen AD-Benutzers aus und meldet das Ergebnis per Telegram.
